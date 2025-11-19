@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Octopus App - Native + Ionic Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            background: #fff;
+            border-radius: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .status-bar {
+            height: 44px;
+            background: linear-gradient(135deg, #FF6B00 0%, #FFB800 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .content-area {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .native-screen {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+            overflow-y: auto;
+        }
+
+        .native-screen.active {
+            display: block;
+        }
+
+        .webview-screen {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+            background: white;
+        }
+
+        .webview-screen.active {
+            display: block;
+        }
+
+        .webview-screen iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Loyalty Native Screen */
+        .loyalty-header {
+            height: 200px;
+            background: linear-gradient(135deg, #FF6B00 0%, #FFB800 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        .loyalty-header h1 {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .loyalty-header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .campaigns-section {
+            padding: 20px 16px;
+            background: #f5f5f5;
+        }
+
+        .campaigns-section h2 {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 16px;
+        }
+
+        .campaign-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .campaign-card:hover {
+            transform: scale(1.02);
+        }
+
+        .campaign-card .emoji {
+            font-size: 40px;
+            margin-right: 12px;
+        }
+
+        .campaign-card .content {
+            flex: 1;
+        }
+
+        .campaign-card h3 {
+            font-size: 16px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 4px;
+        }
+
+        .campaign-card p {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .campaign-card .badge {
+            display: inline-block;
+            background: #FFEFE5;
+            color: #FF6B00;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .campaign-card .chevron {
+            font-size: 32px;
+            color: #ccc;
+        }
+
+        /* Placeholder Screens */
+        .placeholder-screen {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f5f5f5;
+        }
+
+        .placeholder-screen h2 {
+            font-size: 24px;
+            font-weight: bold;
+            color: #999;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        /* Bottom Tab Bar */
+        .bottom-tab-bar {
+            height: 83px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            padding-top: 8px;
+            padding-bottom: 20px;
+        }
+
+        .tab-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .tab-item:hover {
+            transform: scale(1.05);
+        }
+
+        .tab-item .icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .tab-item .label {
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .tab-item.active .icon,
+        .tab-item.active .label {
+            color: #FF6B00;
+        }
+
+        .tab-item:not(.active) .icon,
+        .tab-item:not(.active) .label {
+            color: #999;
+        }
+
+        /* Instructions Banner */
+        .instructions {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: center;
+            max-width: 90%;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .instructions.hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+
+            .phone-frame {
+                width: 100vw;
+                height: 100vh;
+                border-radius: 0;
+            }
+
+            .instructions {
+                bottom: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <!-- Status Bar -->
+        <div class="status-bar">9:41 AM</div>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Manage Tab (Native) -->
+            <div id="manage-screen" class="native-screen">
+                <div class="placeholder-screen">
+                    <h2>Manage Octopus<br>(Native Screen)</h2>
+                </div>
+            </div>
+
+            <!-- Loyalty Tab (Native) -->
+            <div id="loyalty-screen" class="native-screen">
+                <div class="loyalty-header">
+                    <h1>2,450</h1>
+                    <p>Loyalty Points</p>
+                </div>
+                <div class="campaigns-section">
+                    <h2>Active Campaigns</h2>
+
+                    <div class="campaign-card" onclick="openWebView('coffee-frenzy')">
+                        <div class="emoji">☕</div>
+                        <div class="content">
+                            <h3>Coffee Frenzy</h3>
+                            <p>Double Points at Coffee Shops</p>
+                            <span class="badge">2x Points</span>
+                        </div>
+                        <div class="chevron">›</div>
+                    </div>
+
+                    <div class="campaign-card" onclick="openWebView('supermarket-weekend')">
+                        <div class="emoji">🛒</div>
+                        <div class="content">
+                            <h3>Weekend Supermarket Cashback</h3>
+                            <p>Extra Savings on Weekends</p>
+                            <span class="badge">5% Cashback</span>
+                        </div>
+                        <div class="chevron">›</div>
+                    </div>
+
+                    <div class="campaign-card" onclick="openWebView('cinema-rewards')">
+                        <div class="emoji">🎬</div>
+                        <div class="content">
+                            <h3>Cinema Rewards</h3>
+                            <p>Free Popcorn with Movie Tickets</p>
+                            <span class="badge">Free Popcorn</span>
+                        </div>
+                        <div class="chevron">›</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Up Tab (Native) -->
+            <div id="topup-screen" class="native-screen">
+                <div class="placeholder-screen">
+                    <h2>Top Up Octopus<br>(Native Screen)</h2>
+                </div>
+            </div>
+
+            <!-- Travel Tab (Native) -->
+            <div id="travel-screen" class="native-screen">
+                <div class="placeholder-screen">
+                    <h2>Travel & Payments<br>(Native Screen)</h2>
+                </div>
+            </div>
+
+            <!-- Message Tab (Native) -->
+            <div id="message-screen" class="native-screen">
+                <div class="placeholder-screen">
+                    <h2>Messages<br>(Native Screen)</h2>
+                </div>
+            </div>
+
+            <!-- WebView (Ionic App) -->
+            <div id="webview-screen" class="webview-screen">
+                <iframe id="webview-iframe" src=""></iframe>
+            </div>
+        </div>
+
+        <!-- Bottom Tab Bar -->
+        <div class="bottom-tab-bar">
+            <div class="tab-item" onclick="switchTab('manage')">
+                <div class="icon">💳</div>
+                <div class="label">Manage</div>
+            </div>
+            <div class="tab-item" onclick="switchTab('loyalty')">
+                <div class="icon">⭐</div>
+                <div class="label">Loyalty</div>
+            </div>
+            <div class="tab-item" onclick="switchTab('topup')">
+                <div class="icon">➕</div>
+                <div class="label">Top Up</div>
+            </div>
+            <div class="tab-item" onclick="switchTab('travel')">
+                <div class="icon">✈️</div>
+                <div class="label">Travel</div>
+            </div>
+            <div class="tab-item" onclick="switchTab('message')">
+                <div class="icon">✉️</div>
+                <div class="label">Message</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Instructions Banner -->
+    <div id="instructions" class="instructions">
+        👆 Tap a campaign banner to see the 3-level Ionic navigation
+    </div>
+
+    <script>
+        let currentTab = 'manage';
+        let webViewOpen = false;
+
+        // Initialize - show Manage tab first
+        switchTab('manage');
+
+        function switchTab(tab) {
+            currentTab = tab;
+            webViewOpen = false;
+
+            // Hide all screens
+            document.querySelectorAll('.native-screen, .webview-screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(`${tab}-screen`).classList.add('active');
+
+            // Update tab bar
+            document.querySelectorAll('.tab-item').forEach((item, index) => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            // Show instructions only on Loyalty tab
+            const instructions = document.getElementById('instructions');
+            if (tab === 'loyalty') {
+                instructions.classList.remove('hidden');
+            } else {
+                instructions.classList.add('hidden');
+            }
+        }
+
+        function openWebView(campaignId) {
+            webViewOpen = true;
+
+            // Hide native screens
+            document.querySelectorAll('.native-screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+
+            // Show WebView
+            const webViewScreen = document.getElementById('webview-screen');
+            const webViewIframe = document.getElementById('webview-iframe');
+
+            // Load Ionic app in iframe
+            webViewIframe.src = `http://localhost:5173/promo/${campaignId}`;
+            webViewScreen.classList.add('active');
+
+            // Hide instructions
+            document.getElementById('instructions').classList.add('hidden');
+
+            // Listen for close message from iframe
+            window.addEventListener('message', handleIframeMessage);
+        }
+
+        function closeWebView() {
+            webViewOpen = false;
+
+            // Hide WebView
+            document.getElementById('webview-screen').classList.remove('active');
+
+            // Show Loyalty native screen
+            document.getElementById('loyalty-screen').classList.add('active');
+
+            // Show instructions again
+            document.getElementById('instructions').classList.remove('hidden');
+
+            // Clear iframe
+            document.getElementById('webview-iframe').src = '';
+
+            // Remove message listener
+            window.removeEventListener('message', handleIframeMessage);
+        }
+
+        function handleIframeMessage(event) {
+            if (event.data === 'closeWebview') {
+                closeWebView();
+            }
+        }
+
+        // Handle browser back button
+        window.addEventListener('popstate', (event) => {
+            if (webViewOpen) {
+                closeWebView();
+            }
+        });
+
+        // Simulate iOS swipe-back gesture (for demo purposes)
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (webViewOpen && touchEndX - touchStartX > 50) {
+                // Swiped right
+                closeWebView();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_manage"
+        android:icon="@android:drawable/ic_menu_manage"
+        android:title="Manage" />
+    <item
+        android:id="@+id/nav_loyalty"
+        android:icon="@android:drawable/star_big_on"
+        android:title="Loyalty" />
+    <item
+        android:id="@+id/nav_topup"
+        android:icon="@android:drawable/ic_menu_add"
+        android:title="Top Up" />
+    <item
+        android:id="@+id/nav_travel"
+        android:icon="@android:drawable/ic_menu_compass"
+        android:title="Travel" />
+    <item
+        android:id="@+id/nav_message"
+        android:icon="@android:drawable/ic_dialog_email"
+        android:title="Message" />
+</menu>
