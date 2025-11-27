@@ -62,11 +62,16 @@ const ShopDetailPage: React.FC = () => {
       <IonHeader className="ion-no-border">
         <IonToolbar style={{ background: 'linear-gradient(135deg, #FF6B00 0%, #FFB800 100%)' }}>
           <IonButtons slot="start">
+            <IonButton fill="clear" onClick={() => history.goBack()}>
+              <IonIcon icon={arrowBackOutline} style={{ fontSize: '28px', color: 'black' }} />
+            </IonButton>
+          </IonButtons>
+          <IonTitle style={{ color: 'black', fontWeight: 'bold' }}>Shop Details</IonTitle>
+          <IonButtons slot="end">
             <IonButton fill="clear" onClick={handleClose}>
               <IonIcon icon={closeOutline} style={{ fontSize: '28px', color: 'black' }} />
             </IonButton>
           </IonButtons>
-          <IonTitle style={{ color: 'black', fontWeight: 'bold' }}>Shop Details</IonTitle>
         </IonToolbar>
       </IonHeader>
 

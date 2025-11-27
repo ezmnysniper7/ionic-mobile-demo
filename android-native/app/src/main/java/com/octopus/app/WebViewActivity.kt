@@ -27,6 +27,10 @@ class WebViewActivity : AppCompatActivity() {
         webView.settings.javaScriptEnabled = true
         webView.settings.domStorageEnabled = true
 
+        // Set User-Agent to include Android for proper platform detection
+        val defaultUserAgent = webView.settings.userAgentString
+        webView.settings.userAgentString = "$defaultUserAgent Android"
+
         // Add JavaScript interface for native bridge
         webView.addJavascriptInterface(AndroidInterface(), "AndroidInterface")
 

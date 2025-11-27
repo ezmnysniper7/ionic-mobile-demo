@@ -12,7 +12,12 @@ import './theme/global.css';
 
 import { setupIonicReact } from '@ionic/react';
 
-setupIonicReact();
+setupIonicReact({
+  mode: 'ios', // Force iOS UI styles across platforms
+  animated: true, // Enable animations
+  swipeBackEnabled: true, // Keep swipe back gesture
+  hardwareBackButton: true, // Preserve Android hardware back button
+});
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
