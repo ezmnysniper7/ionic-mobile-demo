@@ -14,10 +14,11 @@ import {
   IonBadge,
 } from '@ionic/react';
 import { useHistory, useParams } from 'react-router-dom';
-import { locationOutline, timeOutline, giftOutline, closeOutline, arrowBackOutline } from 'ionicons/icons';
+import { locationOutline, timeOutline, giftOutline, closeOutline, arrowBackOutline, chevronBackOutline } from 'ionicons/icons';
 import { campaigns } from '../data/campaigns';
 import { useIsRootPage } from '../hooks/useIsRootPage';
 import NativeBridge from '../bridge/nativeBridge';
+import { getPlatforms } from '@ionic/react';
 
 const ShopDetailPage: React.FC = () => {
   const history = useHistory();
@@ -25,6 +26,13 @@ const ShopDetailPage: React.FC = () => {
   const campaign = campaigns[campaignId];
   const offer = campaign?.offers.find((o) => o.id === offerId);
   const isRoot = useIsRootPage();
+
+  // Detect platform for back button icon
+  const platforms = getPlatforms();
+  const hasAndroidInterface = typeof (window as any).AndroidInterface !== 'undefined';
+  const userAgentHasAndroid = /android/i.test(navigator.userAgent);
+  const isAndroid = platforms.includes('android') || hasAndroidInterface || userAgentHasAndroid;
+  const backIcon = isAndroid ? arrowBackOutline : chevronBackOutline;
 
   // Handle root page detection for native swipe-back
   useEffect(() => {
@@ -63,7 +71,7 @@ const ShopDetailPage: React.FC = () => {
         <IonToolbar style={{ background: 'linear-gradient(135deg, #FF6B00 0%, #FFB800 100%)' }}>
           <IonButtons slot="start">
             <IonButton fill="clear" onClick={() => history.goBack()}>
-              <IonIcon icon={arrowBackOutline} style={{ fontSize: '28px', color: 'black' }} />
+              <IonIcon icon={backIcon} style={{ fontSize: '28px', color: 'black' }} />
             </IonButton>
           </IonButtons>
           <IonTitle style={{ color: 'black', fontWeight: 'bold' }}>Shop Details</IonTitle>
@@ -203,7 +211,7 @@ const ShopDetailPage: React.FC = () => {
               marginBottom: '12px',
             }}
           >
-            <IonIcon icon={arrowBackOutline} slot="start" />
+            <IonIcon icon={backIcon} slot="start" />
             Back to Offers
           </IonButton>
 
