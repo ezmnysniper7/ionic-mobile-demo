@@ -19,17 +19,17 @@ export const mdTransitionAnimation = (_: HTMLElement, opts: any): Animation => {
     .addElement(opts.leavingEl);
 
   if (opts.direction === 'back') {
-    // Going back: entering page stays in place, leaving page slides DOWN
+    // Going back: entering page stays in place, leaving page slides DOWN slightly
     enteringPage
       .fromTo('opacity', 0.8, 1);
 
     leavingPage
-      .fromTo('transform', 'translateY(0)', 'translateY(100%)')
+      .fromTo('transform', 'translateY(0)', 'translateY(15%)')
       .fromTo('opacity', 1, 0);
   } else {
-    // Going forward: entering page slides UP from bottom, leaving page fades
+    // Going forward: entering page slides UP from bottom slightly, leaving page fades
     enteringPage
-      .fromTo('transform', 'translateY(100%)', 'translateY(0)')
+      .fromTo('transform', 'translateY(15%)', 'translateY(0)')
       .fromTo('opacity', 0, 1);
 
     leavingPage
