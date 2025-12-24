@@ -12,7 +12,15 @@ export default defineConfig({
   ],
   server: {
     host: '0.0.0.0',
-    port: 5173
+    port: 5173,
+    proxy: {
+      '/aem-api': {
+        target: 'https://publish-p171769-e1846736.adobeaemcloud.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/aem-api/, '/graphql/execute.json/octopusprogram'),
+        secure: false,
+      }
+    }
   },
   test: {
     globals: true,
